@@ -1,0 +1,167 @@
+# 寻慧桌宠代码快速定位指南
+
+## 📁 主要文件
+
+| 文件 | 用途 | 常见修改 |
+|------|------|----------|
+| `renderer.js` | 所有核心逻辑（对话、动画、语音、棋盘、日记、PPT、唱歌等） | 95% 的功能调整 |
+| `main.js` | Electron 窗口配置、HTTP/WebSocket 服务 | 窗口大小、透明、端口、调试 |
+| `index.html` | 界面结构、样式、棋盘面板 | 气泡样式、按钮位置、棋盘尺寸 |
+| `mobile.html` | 手机遥控页面 | 按钮布局、IP 地址 |
+
+---
+
+## 🔍 功能定位速查表（在 `renderer.js` 中搜索）
+
+### 1️⃣ 基础动画与移动
+| 功能 | 搜索关键词 | 说明 |
+|------|-----------|------|
+| 状态切换 | `function setState(` | 改变动画图片 |
+| 移动到工作/睡觉点 | `function goToWork(` / `function goToBed(` | 修改坐标 `workPos` / `bedPos` |
+| 移动动画步进 | `function moveStep(` | 移动平滑度 |
+| 工作/睡觉位置 | `const workPos =` / `const bedPos =` | 修改初始坐标 |
+| 工作动画时长 | `setTimeout(..., 3000)` 在 `moveStep` 中 | 工作完成延迟 |
+
+### 2️⃣ 语音与声音
+| 功能 | 搜索关键词 | 说明 |
+|------|-----------|------|
+| 语音合成 | `function speak(` | 调整语速 `rate`、音调 `pitch`、语音 `voice` |
+| 语音识别 | `function startVoiceInput(` | 超时时间 `5000`、语言 `lang` |
+| 是否正在说话 | `let isSpeaking` | 全局标志，防止打断 |
+| 玩耍时哼歌 | `const actions = [` | 修改随机音效文本和声音 |
+
+### 3️⃣ 自动行为
+| 功能 | 搜索关键词 | 说明 |
+|------|-----------|------|
+| 自动睡觉定时 | `function checkAutoSleep(` | 跨天逻辑、时间判断 |
+| 睡觉/起床时间 | `const sleepTime =` / `const wakeTime =` | 修改小时、分钟 |
+| 自动玩耍定时 | `function startRandomPlay(` | 随机间隔 `10000 + Math.random() * 20000` |
+| 空闲自动睡觉 | `function startIdleTimer(` | 30 秒无操作触发 |
+| 玩耍时是否说话 | `if (isSpeaking) { setTimeout(() => play(), 1000); }` | 避免打断语音 |
+
+### 4️⃣ 对话框与输入
+| 功能 | 搜索关键词 | 说明 |
+|------|-----------|------|
+| 气泡显示 | `function showBubble(` | 自动避让屏幕边缘、滚动条 |
+| 输入框创建 | `function createCustomInput(` | 修改输入框样式、占位文字 |
+| 输入框显示位置 | `function showCustomInput(` | 偏移量 `left` / `top` |
+| 发送按钮处理 | `document.getElementById('customInputOk').onclick` | 发送逻辑 |
+| 语音按钮绑定 | `voiceBtn.addEventListener('click', startVoiceInput)` | 麦克风按钮 |
+
+### 5️⃣ 对话与 AI
+| 功能 | 搜索关键词 | 说明 |
+|------|-----------|------|
+| 主对话函数 | `async function talkToOllama(` | 调用 Ollama 模型 |
+| 系统提示词 | `systemMessage.content` | 修改人格设定 |
+| Ollama 地址 | `fetch('http://localhost:11434/api/chat')` | 修改 IP 或端口 |
+| 本地记忆回复 | `function getCannedReply(` | 从 `learningData.dialog` 取 |
+| 报时 | `function tellTime(` | 格式修改 |
+| 搜索 | `async function searchWeb(` | 搜索引擎 URL |
+
+### 6️⃣ 唱歌功能
+| 功能 | 搜索关键词 | 说明 |
+|------|-----------|------|
+| 唱歌主函数 | `async function singSong(` | 查歌词库、播放语音 |
+| 教唱歌 | `function teachSong(` | 保存歌词到 JSON |
+| 歌词库文件 | `const LYRICS_FILE =` | 路径 `C:\Users\用户名\.girlpet_lyrics.json` |
+| 唱歌标志 | `let isSinging` | 防止重叠唱歌 |
+
+### 7️⃣ 日记功能
+| 功能 | 搜索关键词 | 说明 |
+|------|-----------|------|
+| 写日记 | `function writeDiary(` | 追加文本文件 |
+| 读日记 | `function readDiary(` | 读取并预览 |
+| 查看日记反应 | `function reactToDiaryView(` | 随机害羞台词 |
+| 自动记录 | `function autoDiary(` | 各动作触发写入 |
+| 日记文件路径 | `const DIARY_FILE =` | 用户目录下的 `.girlpet_diary.txt` |
+
+### 8️⃣ PPT 生成
+| 功能 | 搜索关键词 | 说明 |
+|------|-----------|------|
+| 生成 PPT | `async function generatePPT(` | 使用 `pptxgenjs` |
+| 主题提取 | `let topic = msg.replace(...` | 在 `handleUserInput` 中 |
+
+### 9️⃣ 五子棋与跳棋
+| 功能 | 搜索关键词 | 说明 |
+|------|-----------|------|
+| 五子棋初始化 | `function initGomoku(` | 棋盘尺寸 `300x300` |
+| 跳棋初始化 | `function initCheckers(` | 棋盘尺寸 `360x360` |
+| 五子棋 AI | `function aiGomokuMove(` | 简易评分 + 学习 |
+| 跳棋 AI | `function aiCheckersMove(` | 随机 + 学习 |
+| 棋盘可拖动 | `const header = gomokuPanel.querySelector('.drag-header')` | 拖拽逻辑 |
+
+### 🔟 记忆与学习
+| 功能 | 搜索关键词 | 说明 |
+|------|-----------|------|
+| 对话学习 | `function recordDialog(` | 保存用户问题与回复 |
+| 棋类学习 | `learningData.gomoku.winning_moves` | 记录输赢走法 |
+| 情绪学习 | `learningData.emotion.stats` | 统计用户对情绪的喜好 |
+| 学习文件 | `const LEARNING_FILE =` | 路径 `.girlpet_learning.json` |
+| 对话历史 | `const HISTORY_FILE =` | 路径 `.girlpet_chat_history.json` |
+
+### 1️⃣1️⃣ 手机遥控
+| 功能 | 搜索关键词 | 说明 |
+|------|-----------|------|
+| 接收手机命令 | `ipcRenderer.on('mobile-command'` | 处理 `action` |
+| 回复手机 | `ipcRenderer.send('reply-to-mobile'` | 发送消息到手机 |
+| HTTP 服务 | `main.js` 中 `createHttpServer` | 端口 `8080` |
+| WebSocket 服务 | `main.js` 中 `createWebSocketServer` | 端口 `8083` |
+
+### 1️⃣2️⃣ 人物拖拽
+| 功能 | 搜索关键词 | 说明 |
+|------|-----------|------|
+| 拖拽事件 | `girl.addEventListener('mousedown'` | 位置更新 `currentX`, `currentY` |
+
+### 1️⃣3️⃣ 定时器与生命周期
+| 功能 | 搜索关键词 | 说明 |
+|------|-----------|------|
+| 启动问候 | `showBubble('🐣 寻慧上线啦！点击我聊天～', 3000);` | 欢迎语 |
+| 空闲定时器 | `function startIdleTimer(` | 30 秒后睡觉 |
+| 随机玩耍定时器 | `function startRandomPlay(` | 10~30 秒随机 |
+
+---
+
+## 🛠️ 常用修改示例
+
+| 需求 | 操作 |
+|------|------|
+| 修改自动睡觉时间 | 搜索 `const sleepTime` 和 `const wakeTime`，改 `hour` / `minute` |
+| 延长玩耍时长 | 搜索 `setTimeout(() => { if (state === 'playing') ... }, 5000);` 改 `5000` |
+| 更换语音角色 | 搜索 `voices.find(v => v.lang === 'zh-CN' ...`，修改 `name.includes` 里的名字 |
+| 关闭随机玩耍 | 注释掉 `startRandomPlay()` 调用 |
+| 修改小女孩名字 | 搜索 `'寻慧'` 替换所有（约 5 处） |
+| 调整气泡最大宽度 | 在 `index.html` 中搜索 `max-width: 280px` |
+| 修改棋盘大小 | 五子棋：搜索 `width="300" height="300"` 和 `cellSize = 20`；跳棋：搜索 `360` |
+
+---
+
+## 🧪 调试技巧
+
+- **打开控制台**：在桌宠窗口按 `Ctrl+Shift+I`
+- **查看实时日志**：控制台会输出 `[定时]`、`日记记录`、`setState` 等
+- **手动触发函数**：在控制台输入 `goToWork()`、`play()`、`checkAutoSleep()` 等
+- **检查变量**：输入 `state`、`isSpeaking`、`currentX` 等
+- **修改配置即时生效**：在控制台直接赋值，如 `sleepTime.hour = 23`
+
+---
+
+## 📂 文件路径速查
+
+| 类型 | 路径 |
+|------|------|
+| 日记 | `C:\Users\你的用户名\.girlpet_diary.txt` |
+| 学习数据 | `C:\Users\你的用户名\.girlpet_learning.json` |
+| 对话历史 | `C:\Users\你的用户名\.girlpet_chat_history.json` |
+| 歌词库 | `C:\Users\你的用户名\.girlpet_lyrics.json` |
+| GIF 图片 | `E:\GirlPet\images\`（根据你的实际安装目录） |
+
+---
+
+## 💡 搜索小技巧
+
+- 使用 VS Code 的 `Ctrl+Shift+F` 全局搜索，限定文件 `*.js` 或 `*.html`
+- 搜索 `console.log(` 找到调试输出位置
+- 搜索 `TODO` 或 `FIXME` 查看未完成项
+- 搜索 `function` 列出所有函数
+
+这份指南涵盖了几乎所有可定制点，日常维护时按需搜索即可。

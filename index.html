@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>寻慧 - 桌面小精灵</title>
+    <style>
+        * { margin: 0; padding: 0; user-select: none; }
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: transparent;
+        }
+        #girl {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            cursor: pointer;
+            transition: left 0.05s linear, top 0.05s linear;
+        }
+        #bubble {
+            position: absolute;
+            background: white;
+            border-radius: 20px;
+            padding: 8px 15px;
+            border: 1px solid #ccc;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+            display: none;
+            max-width: 280px;
+            max-height: 120px;        /* 新增：限制最大高度 */
+            overflow-y: auto;         /* 新增：超出显示滚动条 */
+            word-wrap: break-word;
+            white-space: normal;
+            font-size: 14px;
+            font-family: 'Segoe UI', 'Noto Sans CJK SC', sans-serif;
+            z-index: 100;
+            pointer-events: auto;
+        }
+        .game-panel {
+            display: none;
+            position: fixed;
+            background: rgba(255,255,240,0.95);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+            border: 1px solid #ccc;
+        }
+        .game-canvas {
+            border: 2px solid #8B4513;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+        }
+        .game-buttons {
+            text-align: center;
+            margin-top: 5px;
+            padding-bottom: 5px;
+        }
+        .game-buttons button {
+            margin: 0 5px;
+            padding: 4px 12px;
+        }
+        .drag-header {
+            cursor: move;
+            background: #ff99cc;
+            padding: 6px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+            font-size: 13px;
+            font-weight: bold;
+            user-select: none;
+        }
+
+        
+    </style>
+</head>
+<body>
+    <img id="girl" src="images/idle.gif" alt="寻慧">
+    <div id="bubble"></div>
+
+    <!-- 五子棋面板（300x300，可拖动） -->
+    <div id="gomokuPanel" class="game-panel" style="right: 20px; top: 20px;">
+        <div class="drag-header">🎲 五子棋（拖动移动）</div>
+        <canvas id="gomokuCanvas" class="game-canvas" width="300" height="300"></canvas>
+        <div class="game-buttons">
+            <button id="closeGomokuBtn">关闭棋盘</button>
+            <button id="resetGomokuBtn">新一局</button>
+        </div>
+    </div>
+
+    <!-- 跳棋面板（360x360，放在左上角，完整显示） -->
+    <div id="checkersPanel" class="game-panel" style="left: 10px; top: 10px;">
+        <div class="drag-header">🎲 跳棋（拖动移动）</div>
+        <canvas id="checkersCanvas" class="game-canvas" width="360" height="360"></canvas>
+        <div class="game-buttons">
+            <button id="closeCheckersBtn">关闭跳棋</button>
+            <button id="resetCheckersBtn">新一局</button>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+    <!-- 可拖拽的食物图标（初始隐藏） -->
+    <div id="foodIcon" draggable="true" style="position: fixed; width: 50px; height: 50px; background: #ff9966; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 30px; cursor: grab; z-index: 10001; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">🍎</div>
+</body>
+</html>

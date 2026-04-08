@@ -1,4 +1,4 @@
-# 🐣 寻慧桌面宠物 – 会唱歌、下棋、写日记的 AI 小女孩
+# 🐣 寻慧桌面宠物 – 会下棋能回复能搜索的 AI 小女孩
 
 [![GitHub stars](https://img.shields.io/github/stars/zhang6-maker/GirlPet_Final?style=social)](https://github.com/zhang6-maker/GirlPet_Final/stargazers)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)

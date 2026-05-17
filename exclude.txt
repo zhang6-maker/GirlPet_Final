@@ -1,0 +1,12 @@
+.git\
+models\
+NeteaseCloudMusicApi\
+master.zip
+whisper.cpp\
+python_portable\
+node_modules\
+dist\
+__pycache__\
+*.exe
+*.pyd
+*.log

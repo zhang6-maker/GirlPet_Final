@@ -1,0 +1,16 @@
+﻿node_modules/
+dist/
+python_portable/
+__pycache__/
+*.exe
+*.pyd
+*.log
+.vscode/
+.idea/
+Thumbs.db
+models/ggml-small.bin
+bin/ggml-tiny.bin
+models/
+NeteaseCloudMusicApi/
+master.zip
+whisper.cpp/
